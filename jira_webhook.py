@@ -15,13 +15,13 @@ def main(*args, **kwargs):
     for commit in commits:
         message = commit['message']
 
-	for match in ISSUE_RE.findall(message):
-	    issue = jira.issue(match)
+        for match in ISSUE_RE.findall(message):
+            issue = jira.issue(match)
 
-	    jira.add_comment(issue, 'Commit on branch: {} ({})'.format(
-		branch, repository))
-	    issue.fields.labels.append('commit-{}'.format(branch))
-	    issue.update(fields={'labels': issue.fields.labels})
+            jira.add_comment(issue, 'Commit on branch: {} ({})'.format(
+                branch, repository))
+            issue.fields.labels.append('commit-{}'.format(branch))
+            issue.update(fields={'labels': issue.fields.labels})
 
 
 if __name__ == '__main__':
