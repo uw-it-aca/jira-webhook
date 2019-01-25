@@ -46,9 +46,9 @@ def validate_signature(event):
 
 
 def process_commit(commit, branch, repository):
-    jira = get_jira_client()
-    message = commit['message']
+    message = commit.get('message', '')
     for match in ISSUE_RE.findall(message):
+        jira = get_jira_client()
         issue = jira.issue(match)
 
         comment = jira.add_comment(
