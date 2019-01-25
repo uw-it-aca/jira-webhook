@@ -13,6 +13,7 @@ setup(
     include_package_data=True,
     install_requires=[
         'jira',
+        'beautifulsoup4',
     ],
     license='Apache License, Version 2.0',
     description=('AXDD GitHub webhook for Jira'),

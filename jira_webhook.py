@@ -1,4 +1,4 @@
-from jira.client import JIRA
+from utils import UwSamlJira
 import hmac
 import hashlib
 import base64
@@ -22,7 +22,7 @@ def get_jira_client():
             host = os.environ.get('JIRA_HOST', None)
             user = os.environ.get('JIRA_USER', None)
 
-            JIRA_CLIENT = JIRA(server=host, basic_auth=(user, password))
+            JIRA_CLIENT = UwSamlJira(host=host, auth=(user, password))
         else:
             raise Exception('Missing Jira credentials')
 
@@ -42,11 +42,15 @@ def validate_signature(event):
         raise Exception('Invalid signature: {} {}'.format(digest, signature))
 
 
+def response(status=200, body={}):
+    return {'statusCode': status, 'body': json.dumps(body)}
+
+
 def main(event, *args, **kwargs):
     try:
         validate_signature(event)
     except Exception as ex:
-        return {'statusCode': 403, 'body': 'Error: {}'.format(ex)}
+        return response(status=403, body={'error': ex})
 
     event_type = event.get('headers', {}).get('X-GitHub-Event', '')
 
@@ -58,7 +62,7 @@ def main(event, *args, **kwargs):
         try:
             jira = get_jira_client()
         except Exception as ex:
-            return {'statusCode': 403, 'body': 'Error: {}'.format(ex)}
+            return response(status=403, body={'error': ex})
 
         for commit in body.get('commits', []):
             message = commit['message']
@@ -71,7 +75,7 @@ def main(event, *args, **kwargs):
                 issue.fields.labels.append('commit-{}'.format(branch))
                 issue.update(fields={'labels': issue.fields.labels})
 
-    return {'statusCode': 200, 'body': 'OK'}
+    return response()
 
 
 if __name__ == '__main__':
