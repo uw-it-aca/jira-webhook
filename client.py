@@ -4,12 +4,12 @@ from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 
 
-class UwSamlJira(JIRA):
+class UW_JIRA(JIRA):
     """A Jira client with a saml session to handle authn on an SSO redirect"""
     def __init__(self, host='', auth=(None, None)):
         """Initialize with the basic auth so we use our _session."""
         self._session = UwSamlSession(credentials=auth)
-        super(UwSamlJira, self).__init__(host, basic_auth=('ignored', 'haha'))
+        super(UW_JIRA, self).__init__(host, basic_auth=('ignored', 'haha'))
 
     def _create_http_basic_session(self, *basic_auth, timeout=None):
         """Hide the JIRA implementation so it uses our instance of_session."""

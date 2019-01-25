@@ -1,4 +1,4 @@
-from utils import UwSamlJira
+from client import UW_JIRA
 from jira.exceptions import JIRAError
 import hmac
 import hashlib
@@ -19,13 +19,15 @@ def get_jira_client():
         if 'JIRA_PASSWORD_ENC' in os.environ:
             raw = base64.b64decode(os.environ['JIRA_PASSWORD_ENC'])
             password = KMS_CLIENT.decrypt(CiphertextBlob=raw)['Plaintext']
-
-            host = os.environ.get('JIRA_HOST', None)
-            user = os.environ.get('JIRA_USER', None)
-
-            JIRA_CLIENT = UwSamlJira(host=host, auth=(user, password))
+        elif 'JIRA_PASSWORD' in os.environ:
+            password = os.environ.get('JIRA_PASSWORD')
         else:
-            raise Exception('Missing Jira credentials')
+            raise Exception('Missing JIRA credentials')
+
+        host = os.environ.get('JIRA_HOST')
+        user = os.environ.get('JIRA_USER')
+
+        JIRA_CLIENT = UW_JIRA(host=host, auth=(user, password))
 
     return JIRA_CLIENT
 
@@ -41,6 +43,22 @@ def validate_signature(event):
     digest = 'sha1={}'.format(h.hexdigest())
     if digest != signature:
         raise Exception('Invalid signature: {} {}'.format(digest, signature))
+
+
+def process_commit(commit, branch, repository):
+    jira = get_jira_client()
+    message = commit['message']
+    for match in ISSUE_RE.findall(message):
+        issue = jira.issue(match)
+
+        comment = jira.add_comment(
+            issue, 'Commit on branch {} ({}):\n{}'.format(
+                branch, repository, message))
+
+        label = 'commit-{}'.format(branch)
+        if label not in issue.fields.labels:
+            issue.fields.labels.append(label)
+            issue.update(fields={'labels': issue.fields.labels})
 
 
 def response(status=200, body={}):
@@ -60,28 +78,14 @@ def main(event, *args, **kwargs):
         branch = body.get('ref')
         repository = body.get('repository').get('full_name')
 
-        try:
-            jira = get_jira_client()
-        except Exception as ex:
-            return response(status=403, body={'error': str(ex)})
-
         for commit in body.get('commits', []):
-            message = commit['message']
-            for match in ISSUE_RE.findall(message):
-                issue = jira.issue(match)
-
-                try:
-                    comment = jira.add_comment(
-                        issue, 'Commit on branch {} ({}):\n{}'.format(
-                            branch, repository, message))
-
-                    label = 'commit-{}'.format(branch)
-                    if label not in issue.fields.labels:
-                        issue.fields.labels.append(label)
-                        issue.update(fields={'labels': issue.fields.labels})
-                except JIRAError as ex:
-                    return response(status=ex.status_code,
-                                    body={'url': ex.url, 'error': ex.text})
+            try:
+                process_commit(commit, branch, repository)
+            except JIRAError as ex:
+                return response(status=ex.status_code,
+                                body={'url': ex.url, 'error': ex.text})
+            except Exception as ex:
+                return response(status=403, body={'error': str(ex)})
 
     return response()
 
