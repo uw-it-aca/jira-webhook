@@ -1,4 +1,5 @@
 from utils import UwSamlJira
+from jira.exceptions import JIRAError
 import hmac
 import hashlib
 import base64
@@ -50,7 +51,7 @@ def main(event, *args, **kwargs):
     try:
         validate_signature(event)
     except Exception as ex:
-        return response(status=403, body={'error': ex})
+        return response(status=403, body={'error': str(ex)})
 
     event_type = event.get('headers', {}).get('X-GitHub-Event', '')
 
@@ -62,18 +63,25 @@ def main(event, *args, **kwargs):
         try:
             jira = get_jira_client()
         except Exception as ex:
-            return response(status=403, body={'error': ex})
+            return response(status=403, body={'error': str(ex)})
 
         for commit in body.get('commits', []):
             message = commit['message']
-
             for match in ISSUE_RE.findall(message):
                 issue = jira.issue(match)
 
-                jira.add_comment(issue, 'Commit on branch: {} ({})'.format(
-                    branch, repository))
-                issue.fields.labels.append('commit-{}'.format(branch))
-                issue.update(fields={'labels': issue.fields.labels})
+                try:
+                    comment = jira.add_comment(
+                        issue, 'Commit on branch {} ({}):\n{}'.format(
+                            branch, repository, message))
+
+                    label = 'commit-{}'.format(branch)
+                    if label not in issue.fields.labels:
+                        issue.fields.labels.append(label)
+                        issue.update(fields={'labels': issue.fields.labels})
+                except JIRAError as ex:
+                    return response(status=ex.status_code,
+                                    body={'url': ex.url, 'error': ex.text})
 
     return response()
 
