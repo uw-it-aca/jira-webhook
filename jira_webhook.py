@@ -82,8 +82,9 @@ def main(event, *args, **kwargs):
             try:
                 process_commit(commit, branch, repository)
             except JIRAError as ex:
-                return response(status=ex.status_code,
-                                body={'url': ex.url, 'error': ex.text})
+                if ex.status_code != 404:
+                    return response(status=ex.status_code,
+                                    body={'url': ex.url, 'error': ex.text})
             except Exception as ex:
                 return response(status=403, body={'error': str(ex)})
 
