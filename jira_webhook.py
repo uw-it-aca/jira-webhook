@@ -10,7 +10,8 @@ import re
 
 JIRA_CLIENT = None
 KMS_CLIENT = boto3.client('kms', region_name='us-west-2')
-ISSUE_RE = re.compile(r'([a-z]+-[0-9]+)', re.IGNORECASE)
+ISSUE_CAPTURE_RE = re.compile(r'([a-z]+-[0-9]+)', re.IGNORECASE)
+NON_ISSUE_RE = re.compile(r'^(?:patch|pycodestyle)-', re.IGNORECASE)
 
 
 def get_jira_client():
@@ -47,7 +48,10 @@ def validate_signature(event):
 
 def process_commit(commit, branch, repository):
     message = commit.get('message', '')
-    for match in ISSUE_RE.findall(message):
+    for match in ISSUE_CAPTURE_RE.findall(message):
+        if bool(NON_ISSUE_RE.match(match)):
+            continue
+
         jira = get_jira_client()
         issue = jira.issue(match)
 
