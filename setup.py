@@ -7,11 +7,12 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 setup(
     name='jira-webhook',
     version='0.1',
-    packages=[],
+    packages=['jira_webhook'],
     author="UW-IT AXDD",
     author_email="aca-it@uw.edu",
     include_package_data=True,
     install_requires=[
+        'Django~=2.2',
         'jira',
         'beautifulsoup4',
     ],

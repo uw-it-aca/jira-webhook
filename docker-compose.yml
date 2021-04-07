@@ -1,0 +1,16 @@
+version: '3.4'
+
+services:
+  app:
+    environment:
+      ENV: localdev
+      PORT: 8000
+    restart: always
+    container_name: app-jira-webhook
+    build:
+      context: .
+      target: app-container
+    volumes:
+      - ./jira_webhook:/app/jira_webhook
+    ports:
+      - "8000:8000"

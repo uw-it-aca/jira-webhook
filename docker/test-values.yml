@@ -1,0 +1,78 @@
+ingress:
+enabled: true
+  tls:
+    notify:
+      secretName: jira-webhook.axdd.s.uw.edu-ingress-cert
+      hosts:
+        - jira-webhook.axdd.s.uw.edu
+  hosts:
+    notify:
+      host: jira-webhook.axdd.s.uw.edu
+      paths:
+        - "/"
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+    nginx.ingress.kubernetes.io/client-body-buffer-size: "16K"
+lifecycle:
+  enabled: true
+  preStop:
+    enabled: true
+affinity:
+  podsSpanNodes: true
+readiness:
+  enabled: true
+securityPolicy:
+  enabled: true
+database:
+  engine: null
+memcached:
+  enabled: false
+repo: jira-webhook
+instance: test
+image:
+  repository: gcr.io/uwit-mci-axdd/jira-webhook
+  tag: IMAGE_TAG
+cronjob:
+  enabled: false
+environmentVariables:
+  - name: ENV
+    value: test
+  - name: CLUSTER_CNAME
+    value: jira-webhook.axdd.s.uw.edu
+externalSecrets:
+  enabled: true
+  secrets:
+    - name: jira-webhook.axdd.s.uw.edu-secrets
+      externalKey: axdd/kv/data/jira-webhook/secrets
+      data:
+        - name: django-secret
+          property: django-secret
+        - name: github-token
+          property: github-token
+        - name: jira-host
+          property: jira-host
+        - name: jira-user
+          property: jira-user
+        - name: jira-pass
+          property: jira-password
+environmentVariablesSecrets:
+  djangoSecret:
+    name: DJANGO_SECRET
+    secretName: jira-webhook.axdd.s.uw.edu-secrets
+    secretKey: django-secret
+  githubToken:
+    name: GITHUB_TOKEN
+    secretName: jira-webhook.axdd.s.uw.edu-secrets
+    secretKey: github-token
+  jiraHost:
+    name: JIRA_HOST
+    secretName: jira-webhook.axdd.s.uw.edu-secrets
+    secretKey: jira-host
+  jiraUser:
+    name: JIRA_USER
+    secretName: jira-webhook.axdd.s.uw.edu-secrets
+    secretKey: jira-user
+  jiraPassword:
+    name: JIRA_PASS
+    secretName: jira-webhook.axdd.s.uw.edu-secrets
+    secretKey: jira-password
