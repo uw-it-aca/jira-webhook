@@ -1,12 +1,12 @@
 ingress:
-enabled: true
+  enabled: true
   tls:
-    notify:
+    jira-webhook:
       secretName: jira-webhook.axdd.s.uw.edu-ingress-cert
       hosts:
         - jira-webhook.axdd.s.uw.edu
   hosts:
-    notify:
+    jira-webhook:
       host: jira-webhook.axdd.s.uw.edu
       paths:
         - "/"
@@ -53,7 +53,7 @@ externalSecrets:
           property: jira-host
         - name: jira-user
           property: jira-user
-        - name: jira-pass
+        - name: jira-password
           property: jira-password
 environmentVariablesSecrets:
   djangoSecret:
