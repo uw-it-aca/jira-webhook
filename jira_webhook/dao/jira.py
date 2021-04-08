@@ -14,7 +14,14 @@ NON_ISSUE_RE = re.compile(r'^(?:patch|pycodestyle)-', re.IGNORECASE)
 
 class JiraClient(JIRA):
     """A Jira client with a saml session to handle authn on an SSO redirect"""
-    def __init__(self, host='', auth=(None, None)):
+    def __init__(self, host=None, auth=None):
+        if host is None:
+            host = getattr(settings, 'JIRA_HOST')
+
+        if auth is None:
+            auth = (getattr(settings, 'JIRA_USER'),
+                    getattr(settings, 'JIRA_PASS'))
+
         self._session = SamlSession(credentials=auth)
         """Initialize with the basic auth so we use our _session."""
         super(JiraClient, self).__init__(host, basic_auth=('ignored', 'haha'))

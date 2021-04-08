@@ -5,5 +5,5 @@ from django.urls import re_path
 from jira_webhook.views import APIView
 
 urlpatterns = [
-    re_path(r'api/v1/event$', APIView.as_view()),
+    re_path(r'^api/v1/event$', APIView.as_view()),
 ]
