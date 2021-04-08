@@ -5,7 +5,7 @@ INSTALLED_APPS += [
     'jira_webhook.apps.JiraWebhookConfig',
 ]
 
-GITHUB_WEBHOOK_SECRET = os.getenv('GITHUB_WEBHOOK_SECRET')
+GITHUB_WEBHOOK_SECRET = bytes(os.getenv('GITHUB_WEBHOOK_SECRET', ''), encoding='utf8')
 GITHUB_API_TOKEN = os.getenv('GITHUB_API_TOKEN')
 
 JIRA_HOST = os.getenv('JIRA_HOST')
