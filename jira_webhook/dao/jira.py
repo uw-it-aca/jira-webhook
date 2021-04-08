@@ -13,6 +13,8 @@ NON_ISSUE_RE = re.compile(r'^(?:patch|pycodestyle)-', re.IGNORECASE)
 
 
 class JiraClient(JIRA):
+    UW_JIRA_BASE_URL = '{server}/{rest_path}/{rest_api_version}/{path}'
+
     def __init__(self, server=None, auth=None):
         if server is None:
             server = getattr(settings, 'JIRA_HOST')
@@ -22,6 +24,12 @@ class JiraClient(JIRA):
                     getattr(settings, 'JIRA_PASS'))
 
         super(JiraClient, self).__init__(server=server, basic_auth=auth)
+
+    def _get_url(self, path, base=''):
+        base = UW_JIRA_BASE_URL
+        options = self._options.copy()
+        options.update({"path": path})
+        return base.format(**options)
 
     # def _create_http_basic_session(self, *basic_auth, timeout=None):
     #    """Hide the JIRA implementation so it uses our instance of_session."""
