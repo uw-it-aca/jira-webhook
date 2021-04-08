@@ -30,7 +30,6 @@ class JiraClient(JIRA):
         """Hide the JIRA implementation so it uses our instance of_session."""
 
     def process_commit(self, commit, branch, repository):
-        return True
         message = commit.get('message', '')
         for match in ISSUE_CAPTURE_RE.findall(message):
             if bool(NON_ISSUE_RE.match(match)):
