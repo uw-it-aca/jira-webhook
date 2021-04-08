@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from django.conf import settings
+from jira_webhook import UW_JIRA_BASE_URL
 from jira import JIRA
 import re
 
@@ -22,8 +23,8 @@ class JiraClient(JIRA):
 
         super(JiraClient, self).__init__(server=server, basic_auth=auth)
 
-    def X_get_url(self, path, base=''):
-        base = self.UW_JIRA_BASE_URL
+    def _get_url(self, path, base=''):
+        base = UW_JIRA_BASE_URL
         options = self._options.copy()
         options.update({"path": path})
         return base.format(**options)
