@@ -22,7 +22,7 @@ affinity:
 readiness:
   enabled: true
 securityPolicy:
-  enabled: true
+  enabled: false
 database:
   engine: null
 memcached:
