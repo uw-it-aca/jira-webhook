@@ -4,6 +4,8 @@
 from django.conf import settings
 from django.views import View
 from django.http import HttpResponse
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 from jira.exceptions import JIRAError
 from jira_webhook.dao.jira import JiraClient
 import hmac
@@ -11,6 +13,7 @@ import hashlib
 import json
 
 
+@method_decorator(csrf_exempt, name='dispatch')
 class APIView(View):
     def verify_signature(self, request):
         h = hmac.new(getattr(settings, 'GITHUB_WEBHOOK_SECRET', ''),
