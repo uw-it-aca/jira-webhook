@@ -13,21 +13,18 @@ NON_ISSUE_RE = re.compile(r'^(?:patch|pycodestyle)-', re.IGNORECASE)
 
 
 class JiraClient(JIRA):
-    """A Jira client with a saml session to handle authn on an SSO redirect"""
-    def __init__(self, host=None, auth=None):
-        if host is None:
-            host = getattr(settings, 'JIRA_HOST')
+    def __init__(self, server=None, auth=None):
+        if server is None:
+            server = getattr(settings, 'JIRA_HOST')
 
         if auth is None:
             auth = (getattr(settings, 'JIRA_USER'),
                     getattr(settings, 'JIRA_PASS'))
 
-        self._session = SamlSession(credentials=auth)
-        """Initialize with the basic auth so we use our _session."""
-        super(JiraClient, self).__init__(host, basic_auth=('ignored', 'haha'))
+        super(JiraClient, self).__init__(server=server, basic_auth=auth)
 
-    def _create_http_basic_session(self, *basic_auth, timeout=None):
-        """Hide the JIRA implementation so it uses our instance of_session."""
+    # def _create_http_basic_session(self, *basic_auth, timeout=None):
+    #    """Hide the JIRA implementation so it uses our instance of_session."""
 
     def process_commit(self, commit, branch, repository):
         message = commit.get('message', '')
