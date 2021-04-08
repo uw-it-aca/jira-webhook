@@ -2,12 +2,11 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from jira.resources import Resource
-from jira.client import JIRA
 
 UW_JIRA_BASE_URL = '{server}/{rest_path}/{rest_api_version}/{path}'
 
 """
-Patch for Resource and JIRA classes to force the UW Jira API url format.
+Patch the jira.resources.Resource class to force the UW Jira API url format.
 """
 # def _get_uw_url(self, path):
 #    options = self._options.copy()
@@ -17,4 +16,3 @@ Patch for Resource and JIRA classes to force the UW Jira API url format.
 #
 
 Resource.JIRA_BASE_URL = UW_JIRA_BASE_URL
-JIRA.JIRA_BASE_URL = UW_JIRA_BASE_URL
