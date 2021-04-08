@@ -22,7 +22,7 @@ class JiraClient(JIRA):
 
         super(JiraClient, self).__init__(server=server, basic_auth=auth)
 
-    def _get_url(self, path, base=''):
+    def X_get_url(self, path, base=''):
         base = self.UW_JIRA_BASE_URL
         options = self._options.copy()
         options.update({"path": path})
