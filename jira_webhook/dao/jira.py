@@ -41,6 +41,8 @@ class JiraClient(JIRA):
                 issue, 'Commit on branch {} ({}):\n{}'.format(
                     branch, repository, message))
 
+            continue
+
             label = 'commit-{}'.format(branch)
             if label not in issue.fields.labels:
                 issue.fields.labels.append(label)
