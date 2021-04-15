@@ -14,7 +14,6 @@ setup(
     install_requires=[
         'Django~=2.2',
         'jira',
-        'beautifulsoup4',
     ],
     license='Apache License, Version 2.0',
     description=('AXDD GitHub webhook for Jira'),

@@ -17,7 +17,7 @@ import json
 class APIView(View):
     def verify_signature(self, request):
         h = hmac.new(getattr(settings, 'GITHUB_WEBHOOK_SECRET', ''),
-                     msg=request.body.encode('utf-8'),
+                     msg=request.body,
                      digestmod=hashlib.sha256)
 
         digest = 'sha256={}'.format(h.hexdigest())
