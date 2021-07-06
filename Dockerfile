@@ -1,4 +1,4 @@
-FROM gcr.io/uwit-mci-axdd/django-container:1.3.1 as app-container
+FROM gcr.io/uwit-mci-axdd/django-container:1.3.3 as app-container
 
 ADD --chown=acait:acait jira_webhook/VERSION /app/jira_webhook/
 ADD --chown=acait:acait setup.py /app/
@@ -8,6 +8,6 @@ RUN . /app/bin/activate && pip install -r requirements.txt
 ADD --chown=acait:acait . /app/
 ADD --chown=acait:acait docker/ project/
 
-FROM gcr.io/uwit-mci-axdd/django-test-container:1.3.1 as app-test-container
+FROM gcr.io/uwit-mci-axdd/django-test-container:1.3.3 as app-test-container
 
 COPY --from=app-container /app/ /app/
