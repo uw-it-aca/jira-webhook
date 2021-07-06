@@ -151,8 +151,17 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v2
 
+      - name: Deployment Pipeline
+        if: needs.context.outputs.git_repo_branch == 'develop'
+        uses: uw-it-aca/actions/cicd-deploy@main
+        with:
+          release_name: ${{ env.RELEASE_NAME }}
+          commit_hash: ${{ needs.context.outputs.commit_hash }}
+          git_repo_branch: ${{ needs.context.outputs.git_repo_branch }}
+          gh_auth_token: ${{ secrets.GH_AUTH_TOKEN }}
+
       - name: Deploy Evaluation Branch
-        if: needs.context.outputs.git_repo_branch == 'feature/develop'
+        if: needs.context.outputs.git_repo_branch == 'feature/eval-me'
         uses: uw-it-aca/actions/cicd-deploy@main
         with:
           release_name: ${{ env.RELEASE_NAME }}
@@ -175,6 +184,7 @@ jobs:
 
     steps:
       - name: House Keeping
+        if: needs.context.outputs.git_repo_branch == 'develop'
         uses: uw-it-aca/actions/cicd-housekeeping@main
         with:
           release_name: ${{ env.RELEASE_NAME }}
