@@ -32,7 +32,7 @@ database:
 memcached:
   enabled: false
 repo: jira-webhook
-instance: test
+instance: prod
 image:
   repository: gcr.io/uwit-mci-axdd/jira-webhook
   tag: IMAGE_TAG
@@ -40,14 +40,14 @@ cronjob:
   enabled: false
 environmentVariables:
   - name: ENV
-    value: test
+    value: prod
   - name: CLUSTER_CNAME
     value: jira-webhook.axdd.s.uw.edu
 externalSecrets:
   enabled: true
   secrets:
     - name: jira-webhook.axdd.s.uw.edu-secrets
-      externalKey: axdd/kv/data/jira-webhook/secrets
+      externalKey: jira-webhook/secrets
       data:
         - name: django-secret
           property: django-secret
