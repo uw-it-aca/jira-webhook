@@ -13,10 +13,14 @@ ingress:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt
     nginx.ingress.kubernetes.io/client-body-buffer-size: "16K"
+    nginx.ingress.kubernetes.io/limit-rps: "10"
+
 autoscaling:
   enabled: true
-  minReplicas: 1
-  maxReplicas: 2
+  minReplicas: 2
+  maxReplicas: 4
+targetAverageUtilization: 100
+
 lifecycle:
   enabled: true
   preStop:
@@ -27,17 +31,18 @@ readiness:
   enabled: true
 securityPolicy:
   enabled: false
+
 database:
   engine: null
 memcached:
   enabled: false
+
 repo: jira-webhook
 instance: prod
-image:
-  repository: gcr.io/uwit-mci-axdd/jira-webhook
-  tag: IMAGE_TAG
+
 cronjob:
   enabled: false
+
 environmentVariables:
   - name: ENV
     value: prod
@@ -61,6 +66,7 @@ externalSecrets:
           property: jira-user
         - name: jira-password
           property: jira-password
+
 environmentVariablesSecrets:
   djangoSecret:
     name: DJANGO_SECRET
