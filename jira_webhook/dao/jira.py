@@ -21,21 +21,24 @@ class JiraClient(JIRA):
             auth = (getattr(settings, 'JIRA_USER'),
                     getattr(settings, 'JIRA_PASS'))
 
-        super(JiraClient, self).__init__(server=server, basic_auth=auth)
+        options = {'headers': {'Accept': 'application/json,*/*;q=0.9'}}
+
+        super(JiraClient, self).__init__(
+            server=server, basic_auth=auth, options=options)
 
     def _get_url(self, path, base=''):
         base = UW_JIRA_BASE_URL
         options = self._options.copy()
-        options.update({"path": path})
+        options.update({'path': path})
         return base.format(**options)
 
     def process_commit(self, commit, branch, repository):
         message = commit.get('message', '')
-        for match in ISSUE_CAPTURE_RE.findall(message):
-            if bool(NON_ISSUE_RE.match(match)):
+        for m in ISSUE_CAPTURE_RE.findall(message):
+            if bool(NON_ISSUE_RE.match(m)):
                 continue
 
-            issue = self.issue(match)
+            issue = self.issue(m)
 
             comment = self.add_comment(
                 issue, 'Commit on branch {} ({}):\n{}'.format(
