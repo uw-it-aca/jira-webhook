@@ -8,15 +8,15 @@ setup(
     name='jira-webhook',
     version='0.1',
     packages=['jira_webhook'],
-    author="UW-IT AXDD",
+    author="UW-IT T&LS",
     author_email="aca-it@uw.edu",
     include_package_data=True,
     install_requires=[
-        'Django~=4.2',
+        'django~=4.2',
         'jira',
     ],
     license='Apache License, Version 2.0',
-    description=('AXDD GitHub webhook for Jira'),
+    description=('T&LS GitHub webhook for Jira'),
     url='https://github.com/uw-it-aca/tech-inventory-update',
     classifiers=[
         'Intended Audience :: Developers',
