@@ -3,7 +3,10 @@
 
 from django.conf import settings
 from jira import JIRA
+from logging import getLogger
 import re
+
+logger = getLogger(__name__)
 
 ISSUE_CAPTURE_RE = re.compile(r'([a-z]+-[0-9]+)', re.IGNORECASE)
 NON_ISSUE_RE = re.compile(r'^(?:patch|pycodestyle)-', re.IGNORECASE)
@@ -31,6 +34,8 @@ class JiraClient():
 
             comment = self.client.add_comment(
                 issue, f'Commit on branch {branch} ({repository}):\n{message}')
+
+            logger.info(f'Added comment to {m}: {message}')
 
             continue
 
