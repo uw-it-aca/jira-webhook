@@ -62,10 +62,8 @@ externalSecrets:
           property: github-api-token
         - name: jira-host
           property: jira-host
-        - name: jira-user
-          property: jira-user
-        - name: jira-password
-          property: jira-password
+        - name: jira-api-token
+          property: jira-api-token
 
 environmentVariablesSecrets:
   djangoSecret:
@@ -84,11 +82,7 @@ environmentVariablesSecrets:
     name: JIRA_HOST
     secretName: jira-webhook.axdd.s.uw.edu-secrets
     secretKey: jira-host
-  jiraUser:
-    name: JIRA_USER
+  jiraToken:
+    name: JIRA_API_TOKEN
     secretName: jira-webhook.axdd.s.uw.edu-secrets
-    secretKey: jira-user
-  jiraPassword:
-    name: JIRA_PASS
-    secretName: jira-webhook.axdd.s.uw.edu-secrets
-    secretKey: jira-password
+    secretKey: jira-api-token
