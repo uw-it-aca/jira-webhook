@@ -19,7 +19,7 @@ class Command(BaseCommand):
 
         jira = JiraClient()
 
-        issues = jira.search_issues((
+        issues = jira.client.search_issues((
             'project = {} AND status = Resolved and resolution in (Fixed, '
             'Completed) and (assignee != {} OR assignee IS EMPTY) and '
             'updated < -15minute').format(project, assignee),
@@ -41,6 +41,6 @@ class Command(BaseCommand):
                         has_resolution = True
 
             if not has_assignee_change:
-                jira.add_comment(
+                jira.client.add_comment(
                     issue, 'Auto assigning issue to {}'.format(assignee))
-                jira.assign_issue(issue, assignee)
+                jira.client.assign_issue(issue, assignee)

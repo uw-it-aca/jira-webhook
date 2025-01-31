@@ -39,13 +39,13 @@ class APIView(View):
         except Exception as ex:
             return HttpResponse('{}'.format(ex), status=400)
 
-        client = JiraClient()
+        jira = JiraClient()
 
         branch = data.get('ref')
         repository = data.get('repository').get('full_name')
         for commit in data.get('commits', []):
             try:
-                client.process_commit(commit, branch, repository)
+                jira.process_commit(commit, branch, repository)
             except JIRAError as ex:
                 if ex.status_code != 404:
                     return HttpResponse(

@@ -3,7 +3,7 @@
 
 from django.core.management.base import BaseCommand, CommandError
 from django.conf import settings
-from jira_webhook import process_commit
+from jira_webhook.dao.jira import JiraClient
 from urllib3 import connection_from_url
 import argparse
 import json
