@@ -11,3 +11,9 @@ GITHUB_API_TOKEN = os.getenv('GITHUB_API_TOKEN')
 
 JIRA_HOST = os.getenv('JIRA_HOST')
 JIRA_API_TOKEN = os.getenv('JIRA_API_TOKEN')
+
+LOGGING['loggers']['jira_webhook'] = {
+    'handlers': ['stdout', 'stderr'],
+    'level': 'INFO',
+    'propagate': False,
+}
