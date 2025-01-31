@@ -13,18 +13,16 @@ NON_ISSUE_RE = re.compile(r'^(?:patch|pycodestyle)-', re.IGNORECASE)
 class JiraClient(JIRA):
     UW_JIRA_BASE_URL = '{server}/{rest_path}/{rest_api_version}/{path}'
 
-    def __init__(self, server=None, auth=None):
+    def __init__(self, server=None, token=None):
         if server is None:
             server = getattr(settings, 'JIRA_HOST')
 
-        if auth is None:
-            auth = (getattr(settings, 'JIRA_USER'),
-                    getattr(settings, 'JIRA_PASS'))
+        if token is None:
+            token = getattr(settings, 'JIRA_API_TOKEN')
 
-        options = {'headers': {'Accept': 'application/json,*/*;q=0.9'}}
+        # options = {'headers': {'Accept': 'application/json,*/*;q=0.9'}}
 
-        super(JiraClient, self).__init__(
-            server=server, basic_auth=auth, options=options)
+        super(JiraClient, self).__init__(server=server, token_auth=token)
 
     def _get_url(self, path, base=''):
         base = UW_JIRA_BASE_URL
