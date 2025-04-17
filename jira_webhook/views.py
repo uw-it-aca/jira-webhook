@@ -8,9 +8,12 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from jira.exceptions import JIRAError
 from jira_webhook.dao.jira import JiraClient
+from logging import getLogger
 import hmac
 import hashlib
 import json
+
+logger = getLogger(__name__)
 
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -37,6 +40,7 @@ class APIView(View):
         try:
             data = json.loads(request.body)
         except Exception as ex:
+            logger.error(f'Error loading request.body: {ex}; {request.body}')
             return HttpResponse('{}'.format(ex), status=400)
 
         jira = JiraClient()
