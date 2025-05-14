@@ -19,12 +19,14 @@ logger = getLogger(__name__)
 @method_decorator(csrf_exempt, name='dispatch')
 class APIView(View):
     def verify_signature(self, request):
-        h = hmac.new(getattr(settings, 'GITHUB_WEBHOOK_SECRET', ''),
-                     msg=('' if request.body is None else request.body),
-                     digestmod=hashlib.sha256)
-
-        digest = 'sha256={}'.format(h.hexdigest())
         signature = request.META.get('HTTP_X_HUB_SIGNATURE_256')
+        if signature is None:
+            return False
+
+        h = hmac.new(getattr(settings, 'GITHUB_WEBHOOK_SECRET', ''),
+                     msg=request.body,
+                     digestmod=hashlib.sha256)
+        digest = 'sha256={}'.format(h.hexdigest())
 
         return hmac.compare_digest(digest, signature)
 
