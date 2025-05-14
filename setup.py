@@ -12,7 +12,7 @@ setup(
     author_email="aca-it@uw.edu",
     include_package_data=True,
     install_requires=[
-        'django~=4.2',
+        'django~=5.2',
         'jira',
     ],
     license='Apache License, Version 2.0',
