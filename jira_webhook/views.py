@@ -20,7 +20,7 @@ logger = getLogger(__name__)
 class APIView(View):
     def verify_signature(self, request):
         h = hmac.new(getattr(settings, 'GITHUB_WEBHOOK_SECRET', ''),
-                     msg=request.body,
+                     msg=('' if request.body is None else request.body),
                      digestmod=hashlib.sha256)
 
         digest = 'sha256={}'.format(h.hexdigest())
