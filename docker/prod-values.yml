@@ -9,7 +9,7 @@ ingress:
     jira-webhook:
       host: jira-webhook.axdd.s.uw.edu
       paths:
-        - "/"
+        - "/api/v1/event"
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt
     nginx.ingress.kubernetes.io/client-body-buffer-size: "16K"
@@ -39,6 +39,8 @@ memcached:
 
 repo: jira-webhook
 instance: prod
+namespace:
+  enabled: true
 
 cronjob:
   enabled: false
