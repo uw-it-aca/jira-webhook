@@ -11,3 +11,11 @@ GITHUB_API_TOKEN = os.getenv('GITHUB_API_TOKEN')
 
 JIRA_HOST = os.getenv('JIRA_HOST')
 JIRA_API_TOKEN = os.getenv('JIRA_API_TOKEN')
+
+LOGGING['loggers'] = {
+    '': {
+        'handlers': ['stdout', 'stderr'],
+        'level': 'DEBUG',
+        'propagate': True,
+    },
+}
