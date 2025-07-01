@@ -1,1 +1,2 @@
 -e .
+https://github.com/pycontribs/jira/releases/download/3.10.1/jira-3.10.1-py3-none-any.whl
