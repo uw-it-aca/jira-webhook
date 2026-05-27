@@ -1,9 +1,9 @@
-ARG DJANGO_CONTAINER_VERSION=2.0.8
+ARG DJANGO_CONTAINER_VERSION=3.1.1
 
 FROM us-docker.pkg.dev/uwit-mci-axdd/containers/django-container:${DJANGO_CONTAINER_VERSION} AS app-container
 
-ADD --chown=acait:acait . /app/
-ADD --chown=acait:acait docker/ /app/project/
+COPY --chown=acait:acait . /app/
+COPY --chown=acait:acait docker/ /app/project/
 
 RUN /app/bin/pip install -r requirements.txt
 

@@ -8,7 +8,7 @@ setup(
     name='jira-webhook',
     version='0.1',
     packages=['jira_webhook'],
-    author='UW-IT Student & Educational Technology Services',
+    author='UWIT Student & Educational Technology Services',
     author_email='aca-it@uw.edu',
     include_package_data=True,
     install_requires=[
