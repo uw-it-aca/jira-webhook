@@ -64,6 +64,8 @@ externalSecrets:
           property: github-api-token
         - name: jira-host
           property: jira-host
+        - name: jira-user
+          property: jira-user
         - name: jira-api-token
           property: jira-api-token
 
@@ -84,6 +86,10 @@ environmentVariablesSecrets:
     name: JIRA_HOST
     secretName: jira-webhook.axdd.s.uw.edu-secrets
     secretKey: jira-host
+  jiraUser:
+    name: JIRA_USER
+    secretName: jira-webhook.axdd.s.uw.edu-secrets
+    secretKey: jira-user
   jiraToken:
     name: JIRA_API_TOKEN
     secretName: jira-webhook.axdd.s.uw.edu-secrets
