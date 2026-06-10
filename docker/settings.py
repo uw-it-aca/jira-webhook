@@ -10,6 +10,7 @@ GITHUB_WEBHOOK_SECRET = bytes(os.getenv('GITHUB_WEBHOOK_SECRET', ''),
 GITHUB_API_TOKEN = os.getenv('GITHUB_API_TOKEN')
 
 JIRA_HOST = os.getenv('JIRA_HOST')
+JIRA_USER = os.getenv('JIRA_USER')
 JIRA_API_TOKEN = os.getenv('JIRA_API_TOKEN')
 
 LOGGING['loggers'] = {

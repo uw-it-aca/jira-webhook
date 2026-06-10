@@ -21,7 +21,11 @@ class JiraClient():
         if self._client is None:
             self._client = JIRA(
                 server=getattr(settings, 'JIRA_HOST'),
-                token_auth=getattr(settings, 'JIRA_API_TOKEN'))
+                basic_auth=(
+                    getattr(settings, 'JIRA_USER'),
+                    getattr(settings, 'JIRA_API_TOKEN')
+                )
+            )
         return self._client
 
     def process_commit(self, commit, branch, repository):
