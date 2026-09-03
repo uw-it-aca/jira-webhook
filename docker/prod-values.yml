@@ -15,11 +15,20 @@ ingress:
     nginx.ingress.kubernetes.io/client-body-buffer-size: "16K"
     nginx.ingress.kubernetes.io/limit-rps: "10"
 
+gateway:
+  enabled: true
+  hostnames:
+    - jira-webhook.axdd.s.uw.edu
+  rateLimit:
+    tokens: 10
+    tokensPerFill: 10
+    fillInterval: 1s
+
 autoscaling:
   enabled: true
   minReplicas: 2
   maxReplicas: 4
-targetAverageUtilization: 100
+targetAverageUtilization: 95
 
 lifecycle:
   enabled: true
