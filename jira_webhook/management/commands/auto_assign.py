@@ -1,7 +1,8 @@
 # Copyright 2026 UW-IT, University of Washington
 # SPDX-License-Identifier: Apache-2.0
 
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
+
 from jira_webhook.dao.jira import JiraClient
 
 
@@ -20,17 +21,16 @@ class Command(BaseCommand):
         jira = JiraClient()
 
         issues = jira.client.search_issues((
-            'project = {} AND status = Resolved and resolution in (Fixed, '
-            'Completed) and (assignee != {} OR assignee IS EMPTY) and '
-            'updated < -15minute').format(project, assignee),
-            expand='changelog', maxResults=1000)
+            f'project = {project} AND status = Resolved and resolution in (Fixed, '
+            f'Completed) and (assignee != {assignee} OR assignee IS EMPTY) and '
+            f'updated < -15minute'
+        ), expand='changelog', maxResults=1000)
 
         for issue in issues:
             has_assignee_change = False
             has_resolution = False
             changelog = issue.changelog
             changelog.histories.reverse()
-            resolution_date = None
 
             for history in changelog.histories:
                 for item in history.items:
@@ -41,6 +41,5 @@ class Command(BaseCommand):
                         has_resolution = True
 
             if not has_assignee_change:
-                jira.client.add_comment(
-                    issue, 'Auto assigning issue to {}'.format(assignee))
+                jira.client.add_comment(issue, f'Auto assigning issue to {assignee}')
                 jira.client.assign_issue(issue, assignee)

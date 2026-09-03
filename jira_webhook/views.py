@@ -1,17 +1,19 @@
 # Copyright 2026 UW-IT, University of Washington
 # SPDX-License-Identifier: Apache-2.0
 
+import hashlib
+import hmac
+import json
+from logging import getLogger
+
 from django.conf import settings
-from django.views import View
 from django.http import HttpResponse
 from django.utils.decorators import method_decorator
+from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from jira.exceptions import JIRAError
+
 from jira_webhook.dao.jira import JiraClient
-from logging import getLogger
-import hmac
-import hashlib
-import json
 
 logger = getLogger(__name__)
 
@@ -26,9 +28,8 @@ class APIView(View):
         h = hmac.new(getattr(settings, 'GITHUB_WEBHOOK_SECRET', ''),
                      msg=request.body,
                      digestmod=hashlib.sha256)
-        digest = 'sha256={}'.format(h.hexdigest())
 
-        return hmac.compare_digest(digest, signature)
+        return hmac.compare_digest(f'sha256={h.hexdigest()}', signature)
 
     def post(self, request, *args, **kwargs):
         # Verify message signature
@@ -43,7 +44,7 @@ class APIView(View):
             data = json.loads(request.body)
         except Exception as ex:
             logger.error(f'Error loading request.body: {ex}; {request.body}')
-            return HttpResponse('{}'.format(ex), status=400)
+            return HttpResponse(f'{ex}', status=400)
 
         jira = JiraClient()
 
@@ -58,6 +59,6 @@ class APIView(View):
                         json.dumps({'url': ex.url, 'error': ex.text}),
                         status=ex.status_code)
             except Exception as ex:
-                return HttpResponse('{}'.format(ex), status=403)
+                return HttpResponse(f'{ex}', status=403)
 
         return HttpResponse(status=204)

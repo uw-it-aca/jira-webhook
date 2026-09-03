@@ -1,13 +1,13 @@
 # Copyright 2026 UW-IT, University of Washington
 # SPDX-License-Identifier: Apache-2.0
 
-from django.core.management.base import BaseCommand, CommandError
-from django.conf import settings
-from jira_webhook.dao.jira import JiraClient
-from urllib3 import connection_from_url
-import argparse
 import json
-import os
+
+from django.conf import settings
+from django.core.management.base import BaseCommand
+from urllib3 import connection_from_url
+
+from jira_webhook.dao.jira import JiraClient
 
 BRANCHES = ['develop', 'qa', 'master', 'main']
 
@@ -24,21 +24,19 @@ class Command(BaseCommand):
         org = options.get('org')
         repository = options.get('repository')
 
-        token = getattr(settings, 'GITHUB_API_TOKEN')
         connection = connection_from_url('https://api.github.com')
         headers = {
             'User-Agent': 'Jira-WebHook Backfill 1.0',
-            'Authorization': 'token {}'.format(token),
+            'Authorization': f'token {settings.GITHUB_API_TOKEN}',
         }
 
         jira = JiraClient()
 
         for branch in BRANCHES:
-            branch_name = 'refs/heads/{}'.format(branch)
-            repository_full_name = '{}/{}'.format(org, repository)
+            branch_name = f'refs/heads/{branch}'
+            repository_full_name = '{org}/{repository}'
 
-            next_commits_url = '/repos/{}/{}/commits?sha={}'.format(
-                org, repository, branch)
+            next_commits_url = f'/repos/{org}/{repository}/commits?sha={branch}'
 
             while next_commits_url:
                 response = connection.urlopen(
@@ -61,5 +59,5 @@ class Command(BaseCommand):
             except KeyError:
                 pass
             except Exception as ex:
-                print('Error: {}'.format(ex))
+                print(f'Error: {ex}')
         return next_url
