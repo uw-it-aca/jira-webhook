@@ -1,20 +1,3 @@
-ingress:
-  enabled: true
-  tls:
-    jira-webhook:
-      secretName: jira-webhook.axdd.s.uw.edu-ingress-cert
-      hosts:
-        - jira-webhook.axdd.s.uw.edu
-  hosts:
-    jira-webhook:
-      host: jira-webhook.axdd.s.uw.edu
-      paths:
-        - "/api/v1/event"
-  annotations:
-    cert-manager.io/cluster-issuer: letsencrypt
-    nginx.ingress.kubernetes.io/client-body-buffer-size: "16K"
-    nginx.ingress.kubernetes.io/limit-rps: "10"
-
 gateway:
   enabled: true
   hostnames:
