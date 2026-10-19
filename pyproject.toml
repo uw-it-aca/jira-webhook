@@ -1,0 +1,54 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "jira-webhook"
+dynamic = ["version"]
+description = "UW GitHub webhook for Jira"
+readme = "README.md"
+license = "Apache-2.0"
+authors = [
+    {name = "UWIT Student & Educational Technology Services", email = "aca-it@uw.edu"}
+]
+classifiers = [
+    "Environment :: Web Environment",
+    "Framework :: Django",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+]
+dependencies = [
+    "django~=5.2",
+    "jira @ https://github.com/pycontribs/jira/releases/download/3.10.5/jira-3.10.5-py3-none-any.whl",
+]
+
+[project.optional-dependencies]
+dev = [
+    "ruff",
+]
+
+[tool.setuptools]
+packages = ["jira_webhook"]
+include-package-data = true
+
+[tool.setuptools.dynamic]
+version = {file = "jira_webhook/VERSION"}
+
+[tool.ruff]
+line-length = 88
+
+[tool.ruff.lint]
+ignore = [
+    "BLE001",  # allow broad Exception catches
+]
+
+[tool.coverage.run]
+source = ["jira_webhook"]
+parallel = true
+
+[tool.coverage.paths]
+source = [
+    "jira_webhook/",
+    "/app/jira_webhook/",
+]
